@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Video;
+
+class AdminVideoController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(){
+        $galleries = Video::all();
+        return view('admin.videos.index', compact('galleries'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(){
+        return view('admin.videos.index');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request){
+        $this->validate($request, [
+            'video_url'     => 'required|mimes:mp4,mov,ogg,qt|max:10240', // 10 Mb
+            'title'         => 'required',
+            'video_image'   => 'required|mimes:jpeg,png,jpg,gif,svg',
+        ]);
+
+        $video                          =   new \App\Video;
+        if($file = $request->file('video_url')) {
+            $name       = time().'_video'.'.'.$file->getClientOriginalExtension();
+            $file->move(base_path('public/images/videos'), $name);  
+            $video->video_url = $name;  
+        } 
+
+        if($file_image = $request->file('video_image')) {
+            $video_image_name = time().'_video_image'.'.'.$file_image->getClientOriginalExtension();
+            $file_image->move(base_path('public/images/videos'), $video_image_name);
+            $video->video_image = $video_image_name;  
+        } 
+        $video->title                   =   $request['title'];
+        $video->save();
+
+
+
+        return redirect('admin/videos')->with('added', 'Data Your files has been successfully added');
+    }
+
+    
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id){
+        $request->validate([
+        //   'gallery_img' => 'image|mimes:jpeg,png,jpg',
+        ]);
+
+        $gallery = Video::findOrFail($id);
+
+        $input = $request->all();
+        if ($file = $request->file('video_url')) {
+            $name = $file->getClientOriginalName();
+            $file->move(base_path('public/images/gallery'), $name);
+            if (file_exists(public_path($name = $file->getClientOriginalName()))) {
+                unlink(public_path($name));
+            };
+            $input['video_url'] = $name;
+
+        }
+        $gallery->update($input);
+        return back()->with('updated', 'Gallery has been updated');
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $gallery = Video::findOrFail($id);
+
+        unlink(public_path() . "/images/gallery/" . $gallery->video_url);
+
+        $gallery->delete();
+
+        return back()->with('deleted', 'Gallery has been deleted');
+    }
+}

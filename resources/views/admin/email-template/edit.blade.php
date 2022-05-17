@@ -1,0 +1,156 @@
+@extends('layouts.admin')
+
+@section('sidebar_active')
+  @include('include.sidebar_links', [
+    'users' => '', 'all_user' => '', 'create_user' => '',
+    'teams' => '', 'all_team' => '', 'create_team' => '', 'team_task' => '',
+    'plan' => '', 'all_plan' => '', 'plan_price' => '',
+    'vehicle' => '', 'vehicle_company' => '', 'vehicle_modal' => '', 'vehicle_type' => '',
+    'appointments' => '', 'appointment' => '', 'payment' => '', 'payment_mode' => '', 'currency' => '', 'status' => '',
+    'settings' => '', 'services' => '', 'gallery' => '', 'facts' => '', 'testimonial' => '', 'blog' => '', 'clients' => '', 'opening_hours' => '', 'company_social' => '',
+    'profile' => '', 'sub_appointment' => '','emailManagement' => 'active','emailtemplate' => 'active',
+  ])
+@endsection
+
+@section('breadcum')
+  @include('include.breadcum', [
+    'title' => 'Edit Email-Template',
+    'from' => 'Admin',
+    'to' => 'Edit Email-Template',
+  ])
+@endsection
+
+@section('content')
+ <div class="box-header">
+   {!! Form::model($item, ['method' => 'POST', 'action' => ['AdminEmailTemplateController@updateTemplate', $item->id], 'files' => true]) !!}
+    {!! csrf_field() !!}
+   <input name="_token" type="hidden"  value="{{ csrf_token() }}">
+  <div class="card-body">
+     <fieldset>
+        <div class="row">
+           <div class="col-12 col-md-6">
+              <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
+                 <label for="name">Name</label>
+                 <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" value="{{ ($errors && $errors->any()? old('name') : (isset($item)? $item->name : '')) }}"> 
+                 <small class="text-danger">{{ $errors->first('name') }}</small> 
+              </div>
+           </div>
+           <div class="col-12 col-md-6">
+              <div class="form-group {{ $errors->has('action') ? ' has-error' : '' }}"> 
+                {!! Form::label('action', 'Action') !!} 
+                {!! Form::select('action', [""=>"Please select a action"]+$actionOptions, null, ['class' => 'form-control', 'id'=>'action', ]) !!} <small class="text-danger">{{ $errors->first('action') }}</small> </div>
+           </div>
+           <div class="col-12 col-md-8">
+              <div class="form-group {{ $errors->has('constants') ? ' has-error' : '' }}"> 
+                {!! Form::label('constants', 'Constants') !!} 
+                {!! Form::select('constants', $actionOptions, null, ['class' => 'form-control', 'id'=>'constants', ]) !!} 
+                <small class="text-danger">{{ $errors->first('constants') }}</small> 
+              </div>
+           </div>
+           <div class="col-12 col-md-2">
+              <div class="form-group">
+                 <label for="subject">&nbsp;</label>
+                 <button type="button" class="btn bg-indigo form-control btnvar" onclick="insertHTML()"> Insert variable </button>
+              </div>
+           </div>
+           <div class="col-12 col-md-12">
+              <div class="form-group {{ $errors->has('subject') ? ' has-error' : '' }}" >
+                 <label for="subject">Subject</label>
+                 <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter Subject" value="{{ ($errors && $errors->any()? old('subject') : (isset($item)? $item->subject : '')) }}"> 
+                 <small class="text-danger">{{ $errors->first('subject') }}</small> 
+              </div>
+           </div>
+        </div>
+        <div class="form-group {{ $errors->has('body') ? ' has-error' : '' }}">
+          <label for="body">Body</label>
+          <textarea class="form-control summernote" id="content" name="body" >
+            {{ ($errors && $errors->any()? old('body') : (isset($item)? $item->body : '')) }}
+          </textarea> 
+          <small class="text-danger">{{ $errors->first('body') }}</small> 
+        </div>
+     </fieldset>
+  </div>
+  <div class="box-footer">
+     <div class="btn-group pull-left"> 
+        {!! Form::submit("Update", ['class' => 'btn btn-add btn-default']) !!} 
+     </div>
+  </div>
+</div>
+
+<!-- include libraries(jQuery, bootstrap) -->
+<script type="text/javascript" src="{{asset('public/js/summernote.min.js')}}"></script>
+<!-- summernote css/js -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="{{asset('public/css/summernote1.min.css')}}"> -->
+<!-- <link rel="stylesheet" href="{{asset('public/css/summernote-bs.min.css')}}"> -->
+<!-- <link href="{{asset('public/css/summernote-bs.min.css')}}" rel="stylesheet"> -->
+<script type="text/javascript" charset="utf-8">
+   $(document).ready(function() {
+     $('.summernote').summernote();
+   });
+</script>
+<script type="text/javascript">
+   /**
+    * Function to get email action options on change
+    */
+   $("#action").change(function(e) {
+     appendConstants();
+   });
+   /**
+    * Function to get email action options on page load
+    */
+   $(function() {
+     appendConstants();
+   });
+   /**
+    * Function to append email constants
+    */
+   function appendConstants() {
+     var value  = $("#action").val();
+     var options = '<option value="">Please select a constants</option>';
+     $("#constants").html(options);
+     if(value) {
+       $.ajax({
+         type: "POST",
+         url: "{{route('EmailTemplate.getConstant')}}",
+         data: {
+           "action": value,
+           "_token": "{{ csrf_token() }}",
+         },
+         success: function(response) {
+           if(response) {
+             var result = JSON.parse(response);
+             //var result = (response.result)   ? response.result :[];
+             result.map(function(records) {
+               if(records) {
+                 //var res = records.replace('"','');
+                 //options  += "<option value='"+res+"'>"+res+"</option>";
+                 options += "<option value='" + records + "'>" + records + "</option>";
+               }
+             });
+             $("#constants").html(options);
+             //$('#constants').selectpicker('refresh');
+           } else if(response && response.message) {
+             notice(response.status, response.message);
+           }
+         },
+       });
+     }
+   } // end appendConstants()
+   /**
+    * Insert constant in ckeditor
+    */
+   function insertHTML() {
+     var constant = $("#constants").val();
+     if(constant) {
+       $(".summernote").each(function(index) {
+         var id = $(this).attr("id");
+         if(id) {
+           var newStr = '{' + constant + '}';
+           $("#" + id).summernote('insertText', newStr);
+         }
+       });
+     }
+   } // end insertHTML()
+</script>
+@endsection
