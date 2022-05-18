@@ -36,11 +36,12 @@ host('myapp.io')
   ->user('root')
   ->set('deploy_path', '/var/www/my-app');
 
-host('staging.myapp.io')
-  ->hostname('104.248.172.220')
+host('staging.bubblebath.one')
+  ->hostname('217.21.83.53')
   ->stage('staging')
-  ->user('root')
-  ->set('deploy_path', '/var/www/my-app-staging');
+  ->user('u893456827')
+  ->port('65002')
+  ->set('deploy_path', '/home/u893456827/domains/staging.bubblebath.one/public_html');
 
 after('deploy:failed', 'deploy:unlock');
 
