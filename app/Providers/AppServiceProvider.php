@@ -19,10 +19,10 @@ class AppServiceProvider extends ServiceProvider
         $input  =   $request->all();
 
 
-        $dataResponseObj                =   new \App\DataResponse;
-        $dataResponseObj->main_req      =   json_encode($request['req']);
+    //     $dataResponseObj                =   new \App\DataResponse;
+    //     $dataResponseObj->main_req      =   json_encode($request['req']);
         
-       $dataResponseObj->save();
+    //    $dataResponseObj->save();
       
         if(isset($input['api_from']) && !empty($input['api_from'])){
             $decordedData           =   json_decode(base64_decode($input['req']),true);
