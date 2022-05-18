@@ -20,12 +20,15 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: 7.3
+          extension-csv: mbstring, bcmath
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Composer Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-      - name: Install NPM Dependencies
-        run: npm install
+        run: composer install
       - name: Generate Key
         run: php artisan key:generate
       - name: Execute tests (Unit and Feature tests) via PHPUnit
@@ -41,10 +44,6 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v1
-      - name: NPM Build
-        run: |
-          npm install
-          npm run prod
       - name: Put built assets in Artifacts
         uses: actions/upload-artifact@v1
         with:
@@ -57,15 +56,6 @@ jobs:
     if: github.ref == 'refs/heads/staging'
     steps:
       - uses: actions/checkout@v1
-      - name: NPM Build
-        run: |
-          npm install
-          npm run dev
-      - name: Put built assets in Artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: assets
-          path: public
   deploy-production:
     name: Deploy Project to PRODUCTION Server
     runs-on: ubuntu-latest
@@ -81,10 +71,10 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@master
         with:
-          php-version: 7.4
+          php-version: 7.3
           extension-csv: mbstring, bcmath
       - name: Composer install
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+        run: composer install
       - name: Setup Deployer
         uses: atymic/deployer-php-action@master
         with:
@@ -109,10 +99,10 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@master
         with:
-          php-version: 7.4
+          php-version: 7.3
           extension-csv: mbstring, bcmath
       - name: Composer install
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+        run: composer install
       - name: Setup Deployer
         uses: atymic/deployer-php-action@master
         with:
