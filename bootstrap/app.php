@@ -104,17 +104,17 @@ $app->singleton(
 
 */
 
-function pr($code){
+// function pr($code){
 
-             echo "<pre>";
+//              echo "<pre>";
 
-            print_r($code);
+//             print_r($code);
 
-            echo "</pre>";
+//             echo "</pre>";
 
-        die;
+//         die;
 
-    }
+//     }
 
 
 
