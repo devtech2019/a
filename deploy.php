@@ -29,19 +29,19 @@ task('deploy:secrets', function () {
     file_put_contents(__DIR__ . '/.env', getenv('DOT_ENV'));
     upload('.env', get('deploy_path') . '/shared');
 });
-
-// host('myapp.io')
-//   ->hostname('104.248.172.220')
-//   ->stage('production')
-//   ->user('root')
-//   ->set('deploy_path', '/var/www/my-app');
+// Need to update the Production details here along with directory
+host('myapp.io')
+  ->hostname('104.248.172.220')
+  ->stage('production')
+  ->user('root')
+  ->set('deploy_path', '/var/www/my-app');
 
 host('staging.bubblebath.one')
   ->hostname('217.21.83.53')
   ->stage('staging')
   ->user('u893456827')
   ->port('65002')
-  ->set('deploy_path', '/home/u893456827/domains/staging.bubblebath.one/public_html/');
+  ->set('deploy_path', '/home/u893456827/domains/staging.bubblebath.one/public_html');
 
 after('deploy:failed', 'deploy:unlock');
 
@@ -66,3 +66,33 @@ task('deploy', [
     'deploy:unlock',
     'cleanup',
 ]);
+/**
+ * Prints success message
+ */
+task('deploy:success', function () {
+    info('successfully deployed!');
+})
+    ->hidden();
+
+
+/**
+ * Hook on deploy failure.
+ */
+task('deploy:failed', function () {
+})
+    ->hidden();
+
+fail('deploy', 'deploy:failed');
+
+/**
+ * Follows latest application logs.
+ */
+desc('Shows application logs');
+task('logs:app', function () {
+    if (!has('log_files')) {
+        warning("Please, specify \"log_files\" option.");
+        return;
+    }
+    cd('{{current_path}}');
+    run('tail -f {{log_files}}');
+})->verbose();
