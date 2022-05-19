@@ -5,7 +5,7 @@ namespace Deployer;
 require 'recipe/laravel.php';
 require 'recipe/rsync.php';
 
-set('application', 'My App');
+set('application', 'Bubblebath');
 set('ssh_multiplexing', true);
 
 set('rsync_src', function () {
@@ -30,18 +30,18 @@ task('deploy:secrets', function () {
     upload('.env', get('deploy_path') . '/shared');
 });
 
-host('myapp.io')
-  ->hostname('104.248.172.220')
-  ->stage('production')
-  ->user('root')
-  ->set('deploy_path', '/var/www/my-app');
+// host('myapp.io')
+//   ->hostname('104.248.172.220')
+//   ->stage('production')
+//   ->user('root')
+//   ->set('deploy_path', '/var/www/my-app');
 
 host('staging.bubblebath.one')
   ->hostname('217.21.83.53')
   ->stage('staging')
   ->user('u893456827')
   ->port('65002')
-  ->set('deploy_path', '/home/u893456827/domains/staging.bubblebath.one/public_html');
+  ->set('deploy_path', '/home/u893456827/domains/staging.bubblebath.one/public_html/');
 
 after('deploy:failed', 'deploy:unlock');
 
