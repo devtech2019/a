@@ -61,7 +61,7 @@ task('deploy', [
     'deploy:writable',
     'artisan:storage:link',
     'artisan:view:cache',
-    'artisan:config:clear',
+    'artisan:config:cache',
     'artisan:cache:clear',
     // 'artisan:migrate',
     // 'artisan:queue:restart',
