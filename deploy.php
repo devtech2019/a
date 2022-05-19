@@ -75,12 +75,12 @@ task('deploy', [
  /**
  * Follows latest application logs.
  */
-desc('Shows application logs');
-task('logs:app', function () {
-    if (!has('log_files')) {
-        warning("Please, specify \"log_files\" option.");
-        return;
-    }
-    cd('{{current_path}}');
-    run('tail -f {{log_files}}');
-})->verbose();
+// desc('Shows application logs');
+// task('logs:app', function () {
+//     if (!has('log_files')) {
+//         warning("Please, specify \"log_files\" option.");
+//         return;
+//     }
+//     cd('{{current_path}}');
+//     run('tail -f {{log_files}}');
+// })->verbose();
