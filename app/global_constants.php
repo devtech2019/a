@@ -1,6 +1,6 @@
 <?php
 /* Global constants for site */
-define('FFMPEG_CONVERT_COMMAND', '');
+// define('FFMPEG_CONVERT_COMMAND', '');
 define("ADMIN_FOLDER", "admin/");
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', base_path());
