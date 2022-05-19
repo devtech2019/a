@@ -6,6 +6,7 @@ require 'recipe/laravel.php';
 require 'recipe/rsync.php';
 
 set('application', 'Bubblebath');
+set('http_user', 'www-data');
 set('ssh_multiplexing', true);
 
 set('rsync_src', function () {
@@ -69,22 +70,9 @@ task('deploy', [
 /**
  * Prints success message
  */
-task('deploy:success', function () {
-    info('successfully deployed!');
-})
-    ->hidden();
 
 
-/**
- * Hook on deploy failure.
- */
-task('deploy:failed', function () {
-})
-    ->hidden();
-
-fail('deploy', 'deploy:failed');
-
-/**
+ /**
  * Follows latest application logs.
  */
 desc('Shows application logs');
