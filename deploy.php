@@ -6,9 +6,10 @@ require 'recipe/laravel.php';
 require 'recipe/rsync.php';
 
 set('application', 'Bubblebath');
-set('http_user', 'www-data');
-set('ssh_multiplexing', true);
 
+set('ssh_multiplexing', true);
+set('http_user', 'www-data');
+set('writable_mode', 'chmod');
 set('rsync_src', function () {
     return __DIR__;
 });
