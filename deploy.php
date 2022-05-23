@@ -13,6 +13,7 @@ set('writable_mode', 'chmod');
 set('rsync_src', function () {
     return __DIR__;
 });
+set('current_path', '/home/u893456827/domains/staging.bubblebath.one/public_html');
 
 
 add('rsync', [
@@ -44,7 +45,6 @@ host('staging.bubblebath.one')
   ->user('u893456827')
   ->port('65002')
   ->set('deploy_path', '/home/u893456827/domains/staging.bubblebath.one/public_html');
-
 after('deploy:failed', 'deploy:unlock');
 
 desc('Deploy the application');
