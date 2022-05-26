@@ -14,7 +14,7 @@
                 <img src="{{asset('public/images/teams')}}/{{$banner->image}}" /> 
             	<div class="banner-caption-main">
                    <div class="banner-caption">
-                      <h1>{{$banner->name}}</h1>
+                      <h1>{{$banner->name}} CI CD Done</h1>
                       <p>{{$banner->description}}</p>
                       <a class="common-btn orange-btn hvr-sweep-to-right"
                          href="javascript:void(0)">{{$banner->button_name}}</a>
